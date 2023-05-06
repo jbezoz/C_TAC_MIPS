@@ -2,9 +2,19 @@
 #include "y.tab.h"
 %}
 
-%%
-
-\n          { return yytext[0]; } // Return newline character
-[^\n]+      { yylval.sval = strdup(yytext); return TEXT; } // Return entire line as TEXT token
+variable            [0-9a-zA-Z_(){}\[\];<>=.!+\-*/;]+
 
 %%
+
+#define             {return DEFINE;}
+{variable}          {return IDENTIFIER;}
+[\t]+               {return TAB;}
+[ ]+                ;
+\n                  {return NEWLINE; } // Return newline character
+<<EOF>>             {return END;}
+
+%%
+
+int yywrap(void) {
+    return 1;
+}
